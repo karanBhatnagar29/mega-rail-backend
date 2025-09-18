@@ -73,7 +73,6 @@ export class CardController {
       mobileNumber: body.mobileNumber,
       address: body.address,
       cardNo: body.cardNo,
-      photo: body.photo,
       divisionName: body.divisionName,
       loaNumber: body.loaNumber,
       profileName: body.profileName,
