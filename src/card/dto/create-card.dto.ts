@@ -1,4 +1,3 @@
-// src/card/dto/create-card.dto.ts
 import {
   IsString,
   IsNotEmpty,
@@ -50,4 +49,22 @@ export class CreateCardDto {
   @IsOptional()
   @IsString()
   photo?: string; // base64 or URL
+
+  // 🔹 New fields
+  @IsString()
+  @IsNotEmpty()
+  divisionName: string;
+
+  @IsString()
+  @IsNotEmpty()
+  loaNumber: string;
+
+  @IsString()
+  @IsNotEmpty()
+  profileName: string;
+
+  // 🔹 New field (description)
+  @IsOptional()
+  @IsString()
+  description?: string;
 }

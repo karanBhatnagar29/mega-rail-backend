@@ -3,6 +3,7 @@ import {
   Controller,
   Post,
   Get,
+  Put,
   Param,
   UploadedFile,
   UseInterceptors,
@@ -20,7 +21,7 @@ export class CardController {
   @UseInterceptors(FileInterceptor('file'))
   async createCard(
     @UploadedFile() file: Express.Multer.File,
-    @Body() body: any, // 🔥 get form-data fields
+    @Body() body: any,
   ) {
     const data: CreateCardDto = {
       employeeName: body.employeeName,
@@ -32,6 +33,12 @@ export class CardController {
       validTill: body.validTill,
       mobileNumber: body.mobileNumber,
       address: body.address,
+      cardNo: body.cardNo,
+      photo: body.photo,
+      divisionName: body.divisionName,
+      loaNumber: body.loaNumber,
+      profileName: body.profileName,
+      description: body.description,
     };
 
     return this.cardService.createCard(data, file);
@@ -40,5 +47,39 @@ export class CardController {
   @Get(':id')
   async getCard(@Param('id') id: string) {
     return this.cardService.getCard(id);
+  }
+
+  @Get()
+  async getAllCards() {
+    return this.cardService.getAllCards();
+  }
+
+  // 🔹 New PUT endpoint for editing
+  @Put(':id')
+  @UseInterceptors(FileInterceptor('file'))
+  async updateCard(
+    @Param('id') id: string,
+    @UploadedFile() file: Express.Multer.File,
+    @Body() body: any,
+  ) {
+    const data: Partial<CreateCardDto> = {
+      employeeName: body.employeeName,
+      fatherName: body.fatherName,
+      designation: body.designation,
+      contractor: body.contractor,
+      adharCardNumber: body.adharCardNumber,
+      dateOfIssue: body.dateOfIssue,
+      validTill: body.validTill,
+      mobileNumber: body.mobileNumber,
+      address: body.address,
+      cardNo: body.cardNo,
+      photo: body.photo,
+      divisionName: body.divisionName,
+      loaNumber: body.loaNumber,
+      profileName: body.profileName,
+      description: body.description,
+    };
+
+    return this.cardService.updateCard(id, data, file);
   }
 }

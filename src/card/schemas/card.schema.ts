@@ -1,4 +1,3 @@
-// src/card/schemas/card.schema.ts
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
@@ -38,6 +37,20 @@ export class Card {
 
   @Prop()
   photo: string;
+
+  // 🔹 New fields
+  @Prop({ required: true })
+  divisionName: string;
+
+  @Prop({ required: true })
+  loaNumber: string;
+
+  @Prop({ required: true })
+  profileName: string;
+
+  // 🔹 New field
+  @Prop()
+  description: string;
 }
 
 export const CardSchema = SchemaFactory.createForClass(Card);
