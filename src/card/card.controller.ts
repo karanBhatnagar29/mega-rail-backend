@@ -8,15 +8,17 @@ import {
   UploadedFile,
   UseInterceptors,
   Body,
+  UseGuards,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CardService } from './card.service';
 import { CreateCardDto } from './dto/create-card.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('card')
 export class CardController {
   constructor(private readonly cardService: CardService) {}
-
+  @UseGuards(JwtAuthGuard)
   @Post('create')
   @UseInterceptors(FileInterceptor('file'))
   async createCard(
@@ -48,18 +50,19 @@ export class CardController {
   async viewCard(@Param('id') id: string) {
     return this.cardService.getCard(id);
   }
-
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   async getCard(@Param('id') id: string) {
     return this.cardService.getCard(id);
   }
-
+  @UseGuards(JwtAuthGuard)
   @Get()
   async getAllCards() {
     return this.cardService.getAllCards();
   }
 
   // 🔹 New PUT endpoint for editing
+  @UseGuards(JwtAuthGuard)
   @Put(':id')
   @UseInterceptors(FileInterceptor('file'))
   async updateCard(
