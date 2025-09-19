@@ -6,7 +6,7 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { Admin, AdminSchema } from './schemas/admin.schema';
 import { PassportModule } from '@nestjs/passport';
-import { JwtStrategy } from './jwt-strategy';
+import { JwtStrategy } from './jwt.strategy';
 
 @Module({
   imports: [
