@@ -44,6 +44,11 @@ export class CardController {
     return this.cardService.createCard(data, file);
   }
 
+  @Get('view/:id')
+  async viewCard(@Param('id') id: string) {
+    return this.cardService.getCard(id);
+  }
+
   @Get(':id')
   async getCard(@Param('id') id: string) {
     return this.cardService.getCard(id);
