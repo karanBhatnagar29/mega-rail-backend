@@ -48,9 +48,16 @@ export class CreateCardDto {
 
   @IsOptional()
   @IsString()
-  photo?: string; // base64 or URL
+  photo?: string;
 
-  // 🔹 New fields
+  @IsOptional()
+  @IsString()
+  seal?: string;   // 🔹 New
+
+  @IsOptional()
+  @IsString()
+  sign?: string;   // 🔹 New
+
   @IsString()
   @IsNotEmpty()
   divisionName: string;
@@ -63,7 +70,6 @@ export class CreateCardDto {
   @IsNotEmpty()
   profileName: string;
 
-  // 🔹 New field (description)
   @IsOptional()
   @IsString()
   description?: string;

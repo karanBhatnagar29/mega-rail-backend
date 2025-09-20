@@ -38,7 +38,12 @@ export class Card {
   @Prop()
   photo: string;
 
-  // 🔹 New fields
+  @Prop()
+  seal: string; // 🔹 New
+
+  @Prop()
+  sign: string; // 🔹 New
+
   @Prop({ required: true })
   divisionName: string;
 
@@ -48,7 +53,6 @@ export class Card {
   @Prop({ required: true })
   profileName: string;
 
-  // 🔹 New field
   @Prop()
   description: string;
 }

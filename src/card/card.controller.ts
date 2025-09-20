@@ -1,16 +1,15 @@
-// src/card/card.controller.ts
 import {
   Controller,
   Post,
   Get,
   Put,
   Param,
-  UploadedFile,
+  UploadedFiles,
   UseInterceptors,
   Body,
   UseGuards,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { CardService } from './card.service';
 import { CreateCardDto } from './dto/create-card.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
@@ -18,11 +17,19 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 @Controller('card')
 export class CardController {
   constructor(private readonly cardService: CardService) {}
+
   @UseGuards(JwtAuthGuard)
   @Post('create')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'photo', maxCount: 1 },
+      { name: 'seal', maxCount: 1 },
+      { name: 'sign', maxCount: 1 },
+    ]),
+  )
   async createCard(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFiles()
+    files: { photo?: Express.Multer.File[]; seal?: Express.Multer.File[]; sign?: Express.Multer.File[] },
     @Body() body: any,
   ) {
     const data: CreateCardDto = {
@@ -36,38 +43,45 @@ export class CardController {
       mobileNumber: body.mobileNumber,
       address: body.address,
       cardNo: body.cardNo,
-      photo: body.photo,
       divisionName: body.divisionName,
       loaNumber: body.loaNumber,
       profileName: body.profileName,
       description: body.description,
     };
 
-    return this.cardService.createCard(data, file);
+    return this.cardService.createCard(data, files);
   }
 
   @Get('view/:id')
   async viewCard(@Param('id') id: string) {
     return this.cardService.getCard(id);
   }
+
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   async getCard(@Param('id') id: string) {
     return this.cardService.getCard(id);
   }
+
   @UseGuards(JwtAuthGuard)
   @Get()
   async getAllCards() {
     return this.cardService.getAllCards();
   }
 
-  // 🔹 New PUT endpoint for editing
   @UseGuards(JwtAuthGuard)
   @Put(':id')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'photo', maxCount: 1 },
+      { name: 'seal', maxCount: 1 },
+      { name: 'sign', maxCount: 1 },
+    ]),
+  )
   async updateCard(
     @Param('id') id: string,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFiles()
+    files: { photo?: Express.Multer.File[]; seal?: Express.Multer.File[]; sign?: Express.Multer.File[] },
     @Body() body: any,
   ) {
     const data: Partial<CreateCardDto> = {
@@ -87,6 +101,6 @@ export class CardController {
       description: body.description,
     };
 
-    return this.cardService.updateCard(id, data, file);
+    return this.cardService.updateCard(id, data, files);
   }
 }
