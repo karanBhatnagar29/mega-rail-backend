@@ -1,4 +1,3 @@
-// src/cloudinary/cloudinary.service.ts
 import { Injectable } from '@nestjs/common';
 import { v2 as cloudinary, UploadApiResponse } from 'cloudinary';
 import { Readable } from 'stream';
@@ -7,7 +6,7 @@ import { Readable } from 'stream';
 export class CloudinaryService {
   constructor() {
     cloudinary.config({
-      cloud_name: 'dpdgiqkym', // 🔥 hardcode first to test
+      cloud_name: 'dpdgiqkym',
       api_key: '637919447612188',
       api_secret: 'yu3AXauVvY19IbmoNI0WNGHofYk',
     });
@@ -27,6 +26,15 @@ export class CloudinaryService {
       readable.push(file.buffer);
       readable.push(null);
       readable.pipe(uploadStream);
+    });
+  }
+
+  async deleteImage(publicId: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      cloudinary.uploader.destroy(publicId, (error, result) => {
+        if (error) return reject(error);
+        resolve();
+      });
     });
   }
 }

@@ -97,4 +97,19 @@ export class CardService {
     Object.assign(card, data);
     return card.save();
   }
+
+  async deleteCard(id: string): Promise<{ message: string }> {
+  const card = await this.cardModel.findById(id);
+  if (!card) {
+    throw new NotFoundException(`Card with ID ${id} not found`);
+  }
+
+  await this.cloudinaryService.deleteImage(card.photo);
+  await this.cloudinaryService.deleteImage(card.seal);
+  await this.cloudinaryService.deleteImage(card.sign);
+
+  await this.cardModel.findByIdAndDelete(id);
+  return { message: `Card with ID ${id} has been deleted successfully` };
+}
+
 }

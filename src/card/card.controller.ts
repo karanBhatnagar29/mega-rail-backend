@@ -13,6 +13,7 @@ import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { CardService } from './card.service';
 import { CreateCardDto } from './dto/create-card.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+  import { Delete } from '@nestjs/common';
 
 @Controller('card')
 export class CardController {
@@ -103,4 +104,13 @@ export class CardController {
 
     return this.cardService.updateCard(id, data, files);
   }
+
+
+
+@UseGuards(JwtAuthGuard)
+@Delete(':id')
+async deleteCard(@Param('id') id: string) {
+  return this.cardService.deleteCard(id);
+}
+
 }
