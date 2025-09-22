@@ -99,17 +99,30 @@ export class CardService {
   }
 
   async deleteCard(id: string): Promise<{ message: string }> {
-  const card = await this.cardModel.findById(id);
-  if (!card) {
-    throw new NotFoundException(`Card with ID ${id} not found`);
+    const card = await this.cardModel.findById(id);
+    if (!card) {
+      throw new NotFoundException(`Card with ID ${id} not found`);
+    }
+
+    await this.cloudinaryService.deleteImage(card.photo);
+    await this.cloudinaryService.deleteImage(card.seal);
+    await this.cloudinaryService.deleteImage(card.sign);
+
+    await this.cardModel.findByIdAndDelete(id);
+    return { message: `Card with ID ${id} has been deleted successfully` };
   }
+  async searchCards(query: string): Promise<Card[]> {
+    if (!query) {
+      return this.cardModel.find().exec(); // return all if query empty
+    }
 
-  await this.cloudinaryService.deleteImage(card.photo);
-  await this.cloudinaryService.deleteImage(card.seal);
-  await this.cloudinaryService.deleteImage(card.sign);
-
-  await this.cardModel.findByIdAndDelete(id);
-  return { message: `Card with ID ${id} has been deleted successfully` };
-}
-
+    return this.cardModel
+      .find({
+        $or: [
+          { employeeName: { $regex: query, $options: 'i' } }, // search by employeeName
+          { mobileNumber: { $regex: query, $options: 'i' } }, // search by mobileNumber
+        ],
+      })
+      .exec();
+  }
 }

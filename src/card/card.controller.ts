@@ -8,12 +8,13 @@ import {
   UseInterceptors,
   Body,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { CardService } from './card.service';
 import { CreateCardDto } from './dto/create-card.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-  import { Delete } from '@nestjs/common';
+import { Delete } from '@nestjs/common';
 
 @Controller('card')
 export class CardController {
@@ -30,7 +31,11 @@ export class CardController {
   )
   async createCard(
     @UploadedFiles()
-    files: { photo?: Express.Multer.File[]; seal?: Express.Multer.File[]; sign?: Express.Multer.File[] },
+    files: {
+      photo?: Express.Multer.File[];
+      seal?: Express.Multer.File[];
+      sign?: Express.Multer.File[];
+    },
     @Body() body: any,
   ) {
     const data: CreateCardDto = {
@@ -52,7 +57,11 @@ export class CardController {
 
     return this.cardService.createCard(data, files);
   }
-
+  @UseGuards(JwtAuthGuard)
+  @Get('search')
+  async searchCards(@Query('q') query: string) {
+    return this.cardService.searchCards(query);
+  }
   @Get('view/:id')
   async viewCard(@Param('id') id: string) {
     return this.cardService.getCard(id);
@@ -82,7 +91,11 @@ export class CardController {
   async updateCard(
     @Param('id') id: string,
     @UploadedFiles()
-    files: { photo?: Express.Multer.File[]; seal?: Express.Multer.File[]; sign?: Express.Multer.File[] },
+    files: {
+      photo?: Express.Multer.File[];
+      seal?: Express.Multer.File[];
+      sign?: Express.Multer.File[];
+    },
     @Body() body: any,
   ) {
     const data: Partial<CreateCardDto> = {
@@ -105,12 +118,9 @@ export class CardController {
     return this.cardService.updateCard(id, data, files);
   }
 
-
-
-@UseGuards(JwtAuthGuard)
-@Delete(':id')
-async deleteCard(@Param('id') id: string) {
-  return this.cardService.deleteCard(id);
-}
-
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  async deleteCard(@Param('id') id: string) {
+    return this.cardService.deleteCard(id);
+  }
 }

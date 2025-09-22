@@ -29,9 +29,16 @@ export class CloudinaryService {
     });
   }
 
-  async deleteImage(publicId: string): Promise<void> {
+  async deleteImage(imageUrl: string): Promise<void> {
+    if (!imageUrl) return;
+
+    // Extract everything after `/upload/` and remove the extension
+    const publicId = imageUrl
+      .split('/upload/')[1] // e.g. "v1698765432/employee-cards/abc123.jpg"
+      .split('.')[0]; // e.g. "v1698765432/employee-cards/abc123"
+
     return new Promise((resolve, reject) => {
-      cloudinary.uploader.destroy(publicId, (error, result) => {
+      cloudinary.uploader.destroy(publicId, (error) => {
         if (error) return reject(error);
         resolve();
       });
