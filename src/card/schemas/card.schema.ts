@@ -24,6 +24,9 @@ export class Card {
   contractor: string;
 
   @Prop({ required: true })
+hirer: string;
+
+  @Prop({ required: true })
   adharCardNumber: string;
 
   @Prop({ required: true })
