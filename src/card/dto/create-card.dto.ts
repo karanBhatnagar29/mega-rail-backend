@@ -21,6 +21,10 @@ export class CreateCardDto {
 
   @IsString()
   @IsNotEmpty()
+  hirer: string;
+
+  @IsString()
+  @IsNotEmpty()
   fatherName: string;
 
   @IsString()
@@ -52,11 +56,11 @@ export class CreateCardDto {
 
   @IsOptional()
   @IsString()
-  seal?: string;   // 🔹 New
+  seal?: string; // 🔹 New
 
   @IsOptional()
   @IsString()
-  sign?: string;   // 🔹 New
+  sign?: string; // 🔹 New
 
   @IsString()
   @IsNotEmpty()
