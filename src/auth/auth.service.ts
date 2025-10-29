@@ -127,29 +127,37 @@ export class AuthService {
     confirmPassword: string,
   ) {
     const allowedEmail = 'megarailpowerproject@gmail.com';
+
+    // ✅ Only check if email matches the allowed one
     if (email !== allowedEmail) {
       throw new BadRequestException('Unauthorized email');
     }
 
+    // ✅ Verify OTP
     const validOtp = this.otps.get(email);
     if (!validOtp || validOtp !== otp) {
       throw new BadRequestException('Invalid or expired OTP');
     }
 
+    // ✅ Validate passwords
     if (newPassword !== confirmPassword) {
       throw new BadRequestException('Passwords do not match');
     }
 
-    const admin = await this.adminModel.findOne({ username: allowedEmail });
+    // ✅ Find the only admin (since there's just one)
+    const admin = await this.adminModel.findOne();
     if (!admin) {
       throw new NotFoundException('Admin account not found');
     }
 
+    // ✅ Update password securely
     const hashed = await bcrypt.hash(newPassword, 10);
     admin.password = hashed;
     await admin.save();
 
+    // ✅ Clear OTP after successful reset
     this.otps.delete(email);
+
     return { message: 'Password changed successfully' };
   }
 }
