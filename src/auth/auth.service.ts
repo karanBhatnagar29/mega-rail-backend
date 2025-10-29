@@ -9,10 +9,14 @@ import { InjectModel } from '@nestjs/mongoose';
 import { JwtService } from '@nestjs/jwt';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
+import * as nodemailer from 'nodemailer';
+import { randomInt } from 'crypto';
 import { Admin, AdminDocument } from './schemas/admin.schema';
 
 @Injectable()
 export class AuthService {
+  private otps = new Map<string, string>(); // temporary OTP store
+
   constructor(
     @InjectModel(Admin.name) private adminModel: Model<AdminDocument>,
     private jwtService: JwtService,
@@ -45,7 +49,7 @@ export class AuthService {
     }
   }
 
-  // 🔹 New: Reset password for logged-in admin
+  // 🔹 Existing reset password (for logged-in users)
   async resetPassword(
     adminId: string,
     newPassword: string,
@@ -63,5 +67,89 @@ export class AuthService {
     await admin.save();
 
     return { message: 'Password updated successfully' };
+  }
+
+  // =====================================================
+  // 🔹 New: Send OTP to default Gmail
+  // =====================================================
+  async sendOtp(email: string) {
+    const allowedEmail = 'megarailpowerproject@gmail.com';
+    if (email !== allowedEmail) {
+      throw new BadRequestException('Unauthorized email');
+    }
+
+    const otp = randomInt(100000, 999999).toString();
+    this.otps.set(email, otp);
+
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.MEGARAIL_EMAIL,
+        pass: process.env.MEGARAIL_APP_PASSWORD,
+      },
+    });
+
+    await transporter.sendMail({
+      from: `"Mega Rail Support" <${allowedEmail}>`,
+      to: email,
+      subject: 'Your Mega Rail Password Reset OTP',
+      html: `
+        <div style="font-family: Arial, sans-serif;">
+          <h2>Your OTP Code</h2>
+          <p>Use this 6-digit OTP to reset your password:</p>
+          <h1 style="letter-spacing: 5px;">${otp}</h1>
+          <p>This code will expire in 10 minutes.</p>
+        </div>
+      `,
+    });
+
+    return { message: 'OTP sent successfully' };
+  }
+
+  // =====================================================
+  // 🔹 New: Verify OTP
+  // =====================================================
+  async verifyOtp(email: string, otp: string) {
+    const validOtp = this.otps.get(email);
+    if (!validOtp || validOtp !== otp) {
+      throw new BadRequestException('Invalid or expired OTP');
+    }
+    return { message: 'OTP verified successfully' };
+  }
+
+  // =====================================================
+  // 🔹 New: Change password after OTP verification
+  // =====================================================
+  async resetPasswordWithOtp(
+    email: string,
+    otp: string,
+    newPassword: string,
+    confirmPassword: string,
+  ) {
+    const allowedEmail = 'megarailpowerproject@gmail.com';
+    if (email !== allowedEmail) {
+      throw new BadRequestException('Unauthorized email');
+    }
+
+    const validOtp = this.otps.get(email);
+    if (!validOtp || validOtp !== otp) {
+      throw new BadRequestException('Invalid or expired OTP');
+    }
+
+    if (newPassword !== confirmPassword) {
+      throw new BadRequestException('Passwords do not match');
+    }
+
+    const admin = await this.adminModel.findOne({ username: allowedEmail });
+    if (!admin) {
+      throw new NotFoundException('Admin account not found');
+    }
+
+    const hashed = await bcrypt.hash(newPassword, 10);
+    admin.password = hashed;
+    await admin.save();
+
+    this.otps.delete(email);
+    return { message: 'Password changed successfully' };
   }
 }

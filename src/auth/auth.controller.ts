@@ -16,23 +16,25 @@ import { ResetPasswordDto } from './dto/reset-password.dto';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('register') // ⚠️ use only once to create admin
+  // 🔹 Register (only once)
+  @Post('register')
   async register(@Body() body: { username: string; password: string }) {
     return this.authService.register(body.username, body.password);
   }
 
+  // 🔹 Login
   @Post('login')
   async login(@Body() body: { username: string; password: string }) {
     return this.authService.login(body.username, body.password);
   }
 
+  // 🔹 Reset password for logged-in admin (protected)
   @UseGuards(JwtAuthGuard)
   @Post('reset-password')
   async resetPassword(
     @Req() req: Request,
     @Body() body: { newPassword: string; confirmPassword: string },
   ) {
-    // Tell TypeScript that req has a 'user' property
     const user = (req as any).user as { userId: string; username: string };
 
     if (!user) {
@@ -41,6 +43,39 @@ export class AuthController {
 
     return this.authService.resetPassword(
       user.userId,
+      body.newPassword,
+      body.confirmPassword,
+    );
+  }
+
+  // ======================================================
+  // 🔹 NEW: Forgot password (Send OTP to Gmail)
+  // ======================================================
+  @Post('send-otp')
+  async sendOtp(@Body('email') email: string) {
+    return this.authService.sendOtp(email);
+  }
+
+  // 🔹 Verify OTP
+  @Post('verify-otp')
+  async verifyOtp(@Body() body: { email: string; otp: string }) {
+    return this.authService.verifyOtp(body.email, body.otp);
+  }
+
+  // 🔹 Reset password after OTP verification
+  @Post('reset-password-otp')
+  async resetPasswordWithOtp(
+    @Body()
+    body: {
+      email: string;
+      otp: string;
+      newPassword: string;
+      confirmPassword: string;
+    },
+  ) {
+    return this.authService.resetPasswordWithOtp(
+      body.email,
+      body.otp,
       body.newPassword,
       body.confirmPassword,
     );
