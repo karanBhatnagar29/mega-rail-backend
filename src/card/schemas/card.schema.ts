@@ -24,7 +24,7 @@ export class Card {
   contractor: string;
 
   @Prop({ required: true })
-hirer: string;
+  hirer: string;
 
   @Prop({ required: true })
   adharCardNumber: string;
@@ -37,6 +37,12 @@ hirer: string;
 
   @Prop({ required: true })
   address: string;
+
+  @Prop({ required: true })
+  policeVerification: string;
+
+  @Prop({ required: true })
+  bloodGroup: string;
 
   @Prop()
   photo: string;

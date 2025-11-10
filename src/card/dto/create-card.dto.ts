@@ -35,6 +35,14 @@ export class CreateCardDto {
   @IsNotEmpty()
   contractor: string;
 
+  @IsString()
+  @IsNotEmpty()
+  policeVerification: string;
+
+  @IsString()
+  @IsNotEmpty()
+  bloodGroup: string;
+
   @IsNumberString()
   @Length(12, 12)
   adharCardNumber: string;

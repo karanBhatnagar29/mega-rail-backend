@@ -45,6 +45,8 @@ export class CardController {
       contractor: body.contractor,
       adharCardNumber: body.adharCardNumber,
       hirer: body.hirer,
+      bloodGroup: body.bloodGroup,
+      policeVerification: body.policeVerification,
       dateOfIssue: body.dateOfIssue,
       validTill: body.validTill,
       mobileNumber: body.mobileNumber,
