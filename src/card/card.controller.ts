@@ -112,6 +112,8 @@ export class CardController {
       validTill: body.validTill,
       mobileNumber: body.mobileNumber,
       address: body.address,
+      bloodGroup: body.bloodGroup,
+      policeVerification: body.policeVerification,
       cardNo: body.cardNo,
       divisionName: body.divisionName,
       loaNumber: body.loaNumber,
