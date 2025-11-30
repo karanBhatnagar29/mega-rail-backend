@@ -31,9 +31,9 @@ export class CreateCardDto {
   @IsNotEmpty()
   designation: string;
 
-  @IsString()
-  @IsNotEmpty()
-  contractor: string;
+  // @IsString()
+  // @IsNotEmpty()
+  // contractor: string;
 
   @IsString()
   @IsNotEmpty()
@@ -74,9 +74,9 @@ export class CreateCardDto {
   @IsNotEmpty()
   divisionName: string;
 
-  @IsString()
-  @IsNotEmpty()
-  loaNumber: string;
+  // @IsString()
+  // @IsNotEmpty()
+  // loaNumber: string;
 
   @IsString()
   @IsNotEmpty()
