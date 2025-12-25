@@ -13,7 +13,7 @@ import {
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { CardService } from './card.service';
 import { CreateCardDto } from './dto/create-card.dto';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Delete } from '@nestjs/common';
 
 @Controller('card')
