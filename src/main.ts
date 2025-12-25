@@ -32,12 +32,15 @@ export async function createApp() {
 
   app.enableCors({
     origin: [
+      '*',
       'http://localhost:3001',
       'http://13.202.200.98:3001',
       'https://mega-rail-frontend.vercel.app',
       'http://mega-rail-frontend.vercel.app',
       'https://mega-rail-backend.vercel.app',
-      'http://mega-rail-backend.vercel.app'
+      'http://mega-rail-backend.vercel.app',
+      'https://megarailpowerproject.vercel.app',
+      'http://megarailpowerproject.vercel.app'
     ],
     methods: 'GET,POST,PUT,DELETE',
     allowedHeaders: 'Content-Type, Authorization',
