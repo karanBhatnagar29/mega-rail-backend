@@ -31,9 +31,7 @@ export class CreateCardDto {
   @IsNotEmpty()
   designation: string;
 
-  // @IsString()
-  // @IsNotEmpty()
-  // contractor: string;
+
 
   @IsString()
   @IsNotEmpty()
@@ -49,6 +47,12 @@ export class CreateCardDto {
 
   @IsDateString()
   validTill: string;
+
+  @IsDateString()
+  contractValidityDate: string;
+
+  @IsDateString()
+  contractExpiryDate: string;
 
   @IsNumberString()
   @Length(10, 10)

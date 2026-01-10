@@ -20,9 +20,6 @@ export class Card {
   @Prop({ required: true })
   designation: string;
 
-  // @Prop({ required: true })
-  // contractor: string;
-
   @Prop({ required: true })
   hirer: string;
 
@@ -31,6 +28,12 @@ export class Card {
 
   @Prop({ required: true })
   validTill: string;
+
+  @Prop({ required: true })
+  contractValidityDate: string;
+
+  @Prop({ required: true })
+  contractExpiryDate: string;
 
   @Prop({ required: true })
   mobileNumber: string;
@@ -55,9 +58,6 @@ export class Card {
 
   @Prop({ required: true })
   divisionName: string;
-
-  // @Prop({ required: true })
-  // loaNumber: string;
 
   @Prop({ required: true })
   profileName: string;
